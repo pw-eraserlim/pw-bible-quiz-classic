@@ -1,0 +1,4 @@
+node_modules/
+결과_*.csv
+*.log
+.DS_Store

@@ -1,0 +1,14 @@
+{
+  "name": "bible-quiz",
+  "version": "1.0.0",
+  "description": "교회 성경퀴즈 실시간 대시보드",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1"
+  }
+}

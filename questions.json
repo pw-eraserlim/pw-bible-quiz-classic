@@ -1,0 +1,405 @@
+[
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "성경 66권 중에서 '하나님'이라는 단어가 한 번도 나오지 않는 책은?",
+    "options": [
+      "아가",
+      "에스더",
+      "전도서",
+      "예레미야애가"
+    ],
+    "answerIndex": 1,
+    "points": 100,
+    "reference": "에스더서"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "야곱이 형 에서를 피해 도망가던 밤, 하늘까지 닿은 사닥다리 꿈을 꾼 곳의 이름은?",
+    "answer": "벧엘",
+    "alternates": [
+      "베델",
+      "루스"
+    ],
+    "hint": "'하나님의 집'이라는 뜻입니다",
+    "points": 120,
+    "reference": "창 28:19"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "노아의 방주에 끝내 타지 못한 동물은?",
+    "answer": "물고기",
+    "alternates": [
+      "물고기들",
+      "고기",
+      "생선",
+      "어류",
+      "해양생물"
+    ],
+    "hint": "굳이 탈 이유가 없었죠",
+    "points": 60
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "출애굽 때 내린 열 가지 재앙 중 아홉 번째 재앙은?",
+    "options": [
+      "메뚜기 떼",
+      "흑암",
+      "우박",
+      "독종"
+    ],
+    "answerIndex": 1,
+    "points": 120,
+    "reference": "출 10:21-23"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "모세의 장인이자 미디안 제사장이었던 사람의 이름은?",
+    "answer": "이드로",
+    "alternates": [
+      "르우엘"
+    ],
+    "points": 120,
+    "reference": "출 3:1"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "다음 중 예수님의 열두 제자가 아닌 사람은?",
+    "options": [
+      "바돌로매",
+      "다대오",
+      "바나바",
+      "알패오의 아들 야고보"
+    ],
+    "answerIndex": 2,
+    "hint": "이 사람은 바울의 동역자였습니다",
+    "points": 100,
+    "reference": "마 10:2-4"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "성경에서 가장 오래 산 사람 므두셀라는 몇 살까지 살았나요?",
+    "answer": "969세",
+    "alternates": [
+      "969",
+      "구백육십구"
+    ],
+    "points": 100,
+    "reference": "창 5:27"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "성경에서 컴퓨터를 가장 잘 다뤘을 것 같은 사람은? 사과 하나로 온 세상을 바꿨거든요.",
+    "answer": "아담",
+    "alternates": [
+      "아담과하와",
+      "하와",
+      "이브"
+    ],
+    "points": 60
+  },
+  {
+    "type": "minigame",
+    "game": "memory"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "바울이 감옥에 갇혀 있을 때 쓴 '옥중서신'이 아닌 것은?",
+    "options": [
+      "에베소서",
+      "빌립보서",
+      "골로새서",
+      "로마서"
+    ],
+    "answerIndex": 3,
+    "points": 120,
+    "reference": "옥중서신 4권"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "다니엘의 세 친구가 풀무불에 던져졌을 때 불렸던 바벨론식 이름 세 개를 모두 말해 보세요.",
+    "answer": "사드락 메삭 아벳느고",
+    "alternates": [
+      "사드락메삭아벳느고"
+    ],
+    "hint": "하나냐, 미사엘, 아사랴의 새 이름입니다",
+    "points": 150,
+    "reference": "단 1:7"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "요한계시록에 나오는 일곱 교회에 속하지 않는 곳은?",
+    "options": [
+      "서머나",
+      "버가모",
+      "고린도",
+      "라오디게아"
+    ],
+    "answerIndex": 2,
+    "points": 120,
+    "reference": "계 2-3장"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "예수님이 십자가 위에서 마지막으로 하신 말씀은? (요한복음 기준)",
+    "answer": "다 이루었다",
+    "alternates": [
+      "다이루었다",
+      "다이루었도다"
+    ],
+    "points": 100,
+    "reference": "요 19:30"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "성경 인물 중 눈 검사를 가장 먼저 받아야 했던 사람은? 자기 아들도 못 알아봤습니다.",
+    "answer": "이삭",
+    "alternates": [
+      "이삭이"
+    ],
+    "hint": "야곱을 에서로 착각했죠",
+    "points": 60,
+    "reference": "창 27장"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "성경에서 가장 긴 장(章)은 어디일까요?",
+    "options": [
+      "시편 119편",
+      "이사야 53장",
+      "창세기 1장",
+      "마태복음 5장"
+    ],
+    "answerIndex": 0,
+    "hint": "176절이나 됩니다",
+    "points": 100,
+    "reference": "시 119편"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "요셉이 애굽의 총리가 되어 바로 앞에 섰을 때 그의 나이는?",
+    "answer": "30세",
+    "alternates": [
+      "30",
+      "삼십세",
+      "서른"
+    ],
+    "points": 120,
+    "reference": "창 41:46"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "예수님의 족보(마태복음 1장)에 이름이 나오는 여인이 아닌 사람은?",
+    "options": [
+      "다말",
+      "라합",
+      "룻",
+      "미리암"
+    ],
+    "answerIndex": 3,
+    "points": 120,
+    "reference": "마 1:1-16"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "엘리야가 하늘로 올라갈 때 나타난 것은 불말과 무엇이었나요?",
+    "answer": "불수레",
+    "alternates": [
+      "불병거",
+      "불의수레",
+      "불마차"
+    ],
+    "points": 120,
+    "reference": "왕하 2:11"
+  },
+  {
+    "type": "minigame",
+    "game": "order"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "성경 인물 중 다이어트가 가장 시급했을 것 같은 이름은? 마태복음 족보에 나옵니다.",
+    "answer": "살몬",
+    "alternates": [
+      "살몬이"
+    ],
+    "hint": "보아스의 아버지입니다",
+    "points": 60,
+    "reference": "마 1:4-5"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "오순절 성령 강림 이후 베드로의 설교를 듣고 세례를 받은 사람은 몇 명이었나요?",
+    "options": [
+      "약 120명",
+      "약 500명",
+      "약 3000명",
+      "약 5000명"
+    ],
+    "answerIndex": 2,
+    "points": 100,
+    "reference": "행 2:41"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "성경에서 가장 짧은 절인 요한복음 11장 35절의 내용을 그대로 적어 보세요.",
+    "answer": "예수께서 눈물을 흘리시더라",
+    "alternates": [
+      "예수님이눈물을흘리시더라",
+      "예수눈물"
+    ],
+    "points": 150,
+    "reference": "요 11:35"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "사사기에 등장하는 사사 중, 300명의 군사로 미디안을 물리친 사람은?",
+    "options": [
+      "입다",
+      "기드온",
+      "삼갈",
+      "옷니엘"
+    ],
+    "answerIndex": 1,
+    "points": 100,
+    "reference": "삿 7장"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "닭이 가장 만나기 싫어할 것 같은 제자는?",
+    "answer": "베드로",
+    "alternates": [
+      "시몬베드로"
+    ],
+    "hint": "닭 울기 전에 세 번…",
+    "points": 60,
+    "reference": "마 26:75"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "룻기에서 룻이 끝까지 따라간 시어머니의 이름은?",
+    "answer": "나오미",
+    "alternates": [
+      "마라"
+    ],
+    "points": 100,
+    "reference": "룻 1:16"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "다음 중 신약성경에서 가장 짧은 책은?",
+    "options": [
+      "유다서",
+      "빌레몬서",
+      "요한이서",
+      "요한삼서"
+    ],
+    "answerIndex": 2,
+    "hint": "헬라어 단어 수 기준입니다",
+    "points": 150,
+    "reference": "요이 1장"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "바울의 1차 전도여행에 함께 떠난 동역자의 이름은?",
+    "answer": "바나바",
+    "alternates": [
+      "바나바와마가"
+    ],
+    "points": 100,
+    "reference": "행 13:2-3"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "성경에서 가장 먼저 사과한 사람은 누구일까요? 아주 유명한 사과였죠.",
+    "answer": "아담",
+    "alternates": [
+      "하와",
+      "아담과하와",
+      "이브"
+    ],
+    "points": 60
+  },
+  {
+    "type": "minigame",
+    "game": "speed"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "갈라디아서 5장의 성령의 아홉 가지 열매 중 마지막에 나오는 것은?",
+    "options": [
+      "온유",
+      "충성",
+      "절제",
+      "화평"
+    ],
+    "answerIndex": 2,
+    "points": 120,
+    "reference": "갈 5:22-23"
+  },
+  {
+    "type": "short",
+    "kind": "bible",
+    "text": "예수님이 겟세마네 동산에서 기도하실 때 따로 데리고 가신 세 제자는 베드로, 야고보 그리고 누구인가요?",
+    "answer": "요한",
+    "alternates": [
+      "사도요한"
+    ],
+    "points": 100,
+    "reference": "마 26:37"
+  },
+  {
+    "type": "choice",
+    "kind": "bible",
+    "text": "'여호와는 나의 목자시니 내게 부족함이 없으리로다'는 몇 편의 시작 구절인가요?",
+    "options": [
+      "시편 1편",
+      "시편 23편",
+      "시편 46편",
+      "시편 121편"
+    ],
+    "answerIndex": 1,
+    "points": 80,
+    "reference": "시 23:1"
+  },
+  {
+    "type": "short",
+    "kind": "nonsense",
+    "text": "홍해가 갈라졌을 때 가장 당황했을 것 같은 존재는? 정해진 답은 없습니다. 재미있게 적어 보세요!",
+    "answer": "물고기",
+    "alternates": [
+      "물고기들",
+      "생선",
+      "게",
+      "고기"
+    ],
+    "hint": "선생님이 웃으면 정답입니다",
+    "points": 60
+  }
+]
