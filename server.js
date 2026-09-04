@@ -200,11 +200,28 @@ function lanAddress() {
     for (const net of list || []) if (net.family === "IPv4" && !net.internal) return net.address;
   return "localhost";
 }
-const JOIN_URL = `http://${lanAddress()}:${PORT}`;
+const LAN_URL = `http://${lanAddress()}:${PORT}`;
+
+/* 대시보드를 연 브라우저의 주소창 주소를 그대로 학생 접속 주소로 쓴다.
+   여러 랜카드가 잡혀도 선생님이 실제로 접속한 주소가 QR 에 나온다.
+   다만 localhost 로 열면 학생 폰이 찾아올 수 없으니 그때만 랜 주소로 바꾼다. */
+const LOOPBACK = new Set(["localhost", "127.0.0.1", "::1", "0.0.0.0"]);
+function joinUrl(req) {
+  const host = (req.headers.host || "").trim();
+  if (!host) return LAN_URL;
+  let name = host;
+  const cut = name.lastIndexOf(":");
+  if (cut > name.lastIndexOf("]")) name = name.slice(0, cut); // 포트 떼기
+  name = name.split("[").join("").split("]").join("").toLowerCase();
+  if (LOOPBACK.has(name)) return LAN_URL;
+  return `${req.protocol}://${host}`;
+}
+
 app.get("/host", (req, res) => res.sendFile(path.join(__dirname, "public", "host.html")));
 app.get("/api/join-info", async (req, res) => {
-  const qr = await QRCode.toDataURL(JOIN_URL, { margin: 1, width: 460, color: { dark: "#0A1020", light: "#FFFFFF" } });
-  res.json({ url: JOIN_URL, qr });
+  const url = joinUrl(req);
+  const qr = await QRCode.toDataURL(url, { margin: 1, width: 460, color: { dark: "#0A1020", light: "#FFFFFF" } });
+  res.json({ url, qr });
 });
 
 /* ---------------- 소켓 ---------------- */
@@ -400,7 +417,7 @@ server.listen(PORT, "0.0.0.0", () => {
   console.log("\n  성경퀴즈 서버가 켜졌습니다.");
   console.log("  ─────────────────────────────────────");
   console.log(`  대시보드(메인 화면) : http://localhost:${PORT}/host`);
-  console.log(`  학생 접속 주소      : ${JOIN_URL}`);
+  console.log(`  학생 접속 주소      : ${LAN_URL}  (대시보드를 연 주소가 QR 에 그대로 나옵니다)`);
   console.log(`  문제 ${game.questions.length - mg}개 + 미니게임 ${mg}개`);
   console.log("  ─────────────────────────────────────\n");
 });
