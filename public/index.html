@@ -130,11 +130,186 @@ input::placeholder{color:#5E7794}
 .flash{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:9}
 .flash.go{animation:fl .55s ease-out}
 @keyframes fl{0%{opacity:.5}100%{opacity:0}}
-@media (prefers-reduced-motion:reduce){.dots::after{animation:none;content:'...'}.flash.go,.oi.bad{animation:none}}
+/* ══════════════ 애니메이션 추가분 ══════════════ */
+#fx{position:fixed;inset:0;z-index:10;pointer-events:none}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(420px 320px at 16% 94%, rgba(63,224,168,.13), transparent 66%);
+  animation:bgFloat 13s ease-in-out infinite}
+@keyframes bgFloat{0%,100%{transform:translate(0,0) scale(1);opacity:.75}50%{transform:translate(7%,-6%) scale(1.18);opacity:1}}
+
+@keyframes fxIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.fx-in{animation:fxIn .42s cubic-bezier(.2,.9,.3,1) both}
+h1.fx-in{animation:fxIn .5s cubic-bezier(.2,.9,.3,1) both}
+
+/* 문제 카드 */
+.q.fx-in{animation:qCard .48s cubic-bezier(.2,1.05,.35,1) both}
+@keyframes qCard{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.q .t.hot{animation:hotP 1.6s ease-in-out infinite}
+@keyframes hotP{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+
+/* 보기 버튼 */
+.ob{transition:transform .12s,border-color .2s,background .2s,opacity .3s}
+.ob.fx-in{animation:obIn .44s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes obIn{from{opacity:0;transform:translateX(-26px) scale(.95)}to{opacity:1;transform:none}}
+.ob:active{transform:scale(.96)}
+.ob.picked{animation:pick .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pick{0%{transform:scale(1)}32%{transform:scale(1.05);box-shadow:0 0 0 7px rgba(238,243,250,.22)}100%{transform:scale(1);box-shadow:none}}
+.ob.win{animation:winRing 1.1s ease-out 2}
+@keyframes winRing{0%{box-shadow:0 0 0 0 rgba(63,224,168,.5)}100%{box-shadow:0 0 0 20px rgba(63,224,168,0)}}
+.big{transition:transform .12s,box-shadow .2s}
+.big:not(:disabled){animation:goP 2.4s ease-in-out infinite}
+@keyframes goP{0%,100%{box-shadow:0 0 0 0 rgba(255,194,75,.35)}70%,100%{box-shadow:0 0 0 13px rgba(255,194,75,0)}}
+.big:active{transform:scale(.97)}
+input{transition:border-color .2s,box-shadow .2s}
+input:focus{box-shadow:0 0 0 4px rgba(255,194,75,.15)}
+
+/* 결과 카드 */
+.card.fx-in{animation:cardIn .5s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(22px) scale(.93)}to{opacity:1;transform:none}}
+.card.ok{animation:okBurst .75s cubic-bezier(.2,1.3,.4,1)}
+@keyframes okBurst{0%{transform:scale(.82);box-shadow:0 0 0 0 rgba(63,224,168,.5)}45%{transform:scale(1.05)}100%{transform:scale(1);box-shadow:0 0 0 34px rgba(63,224,168,0)}}
+.card.no{animation:noShake .55s}
+@keyframes noShake{0%,100%{transform:translateX(0)}14%{transform:translateX(-11px)}28%{transform:translateX(10px)}44%{transform:translateX(-7px)}62%{transform:translateX(5px)}82%{transform:translateX(-3px)}}
+.gain{display:inline-block;animation:gainUp .85s .15s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes gainUp{0%{opacity:0;transform:translateY(18px) scale(.5)}55%{opacity:1;transform:translateY(-5px) scale(1.2)}100%{opacity:1;transform:none}}
+.card .big-t{display:block}
+
+/* 상단 점수 */
+.hud .sc b{display:inline-block}
+.hud .sc b.bump{animation:bump .48s cubic-bezier(.2,1.6,.4,1)}
+@keyframes bump{0%{transform:scale(1)}38%{transform:scale(1.42);color:#fff}100%{transform:scale(1)}}
+.hud .streak{animation:flick 1.2s ease-in-out infinite}
+@keyframes flick{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* 제출 완료 체크 */
+.tick{width:56px;height:56px;display:block;margin:0 auto 8px}
+.tick circle{fill:none;stroke:var(--accent);stroke-width:4;stroke-dasharray:151;stroke-dashoffset:151;animation:draw .6s ease-out forwards}
+.tick path{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:44;stroke-dashoffset:44;animation:draw .35s .5s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* 대기 중 숨쉬기 */
+.breathe{animation:br 2.8s ease-in-out infinite}
+@keyframes br{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.035);opacity:.85}}
+
+/* 진행바 */
+.pbar i{transition:width .45s cubic-bezier(.2,.9,.3,1);position:relative;overflow:hidden}
+.pbar i::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:sweep 1.4s linear infinite}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.mg-top .tm.warn{animation:beat .9s ease-in-out infinite;display:inline-block}
+@keyframes beat{0%,100%{transform:scale(1)}18%{transform:scale(1.25)}36%{transform:scale(1)}54%{transform:scale(1.12)}}
+
+/* 카드 뒤집기 — 진짜로 넘어가게 */
+.mem{perspective:900px}
+.mc{position:relative;transform-style:preserve-3d;
+    transition:transform .36s cubic-bezier(.2,.9,.3,1),background .25s,border-color .25s}
+.mc .back{backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:opacity .1s}
+.mc .f{position:absolute;inset:0;display:grid;place-items:center;padding:4px;
+       transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.mc.up,.mc.got{transform:rotateY(180deg)}
+.mc:active{transform:scale(.95)}
+.mc.up:active,.mc.got:active{transform:rotateY(180deg) scale(.97)}
+.mc.got{animation:gotPop .55s cubic-bezier(.2,1.4,.4,1)}
+@keyframes gotPop{0%{transform:rotateY(180deg) scale(1)}40%{transform:rotateY(180deg) scale(1.13);box-shadow:0 0 22px rgba(63,224,168,.5)}100%{transform:rotateY(180deg) scale(1);box-shadow:none}}
+.mc.fx-in{animation:dealIn .4s cubic-bezier(.2,1.2,.4,1) backwards}
+@keyframes dealIn{from{opacity:0;transform:translateY(16px) scale(.8)}to{opacity:1;transform:none}}
+
+/* 순서 맞추기 */
+.oi{transition:background .2s,border-color .2s,transform .12s}
+.oi:active{transform:scale(.98)}
+.oi.done{animation:oiDone .48s cubic-bezier(.2,1.4,.4,1)}
+@keyframes oiDone{0%{transform:scale(1)}38%{transform:scale(1.045);box-shadow:0 0 20px rgba(63,224,168,.4)}100%{transform:scale(1);box-shadow:none}}
+
+/* 스피드 탭 */
+.sb{transition:transform .12s,background .18s,border-color .18s}
+.sb:active{transform:scale(.94)}
+.sb.hit{animation:hitPop .45s cubic-bezier(.2,1.5,.4,1)}
+@keyframes hitPop{0%{transform:scale(1)}38%{transform:scale(1.11);box-shadow:0 0 20px rgba(63,224,168,.45)}100%{transform:scale(1);box-shadow:none}}
+.sb.miss{animation:missSh .38s}
+@keyframes missSh{0%,100%{transform:translateX(0)}22%{transform:translateX(-9px)}55%{transform:translateX(9px)}80%{transform:translateX(-4px)}}
+.score-big{display:block}
+.score-big.bump{animation:bump .45s cubic-bezier(.2,1.6,.4,1)}
+
+/* 순위 */
+.rr.fx-in{animation:rrIn .44s cubic-bezier(.2,1.1,.35,1) both}
+@keyframes rrIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.rr.me{animation:meGlow 2.2s ease-in-out infinite}
+.rr.me.fx-in{animation:rrIn .44s cubic-bezier(.2,1.1,.35,1) both,meGlow 2.2s .6s ease-in-out infinite}
+@keyframes meGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,194,75,.32)}70%,100%{box-shadow:0 0 0 8px rgba(255,194,75,0)}}
+
+/* 정답 순간 확대되는 링 */
+.ring{position:fixed;left:50%;top:46%;width:14px;height:14px;border-radius:50%;z-index:9;
+      pointer-events:none;transform:translate(-50%,-50%);border:4px solid var(--mint);opacity:0}
+.ring.go{animation:ringOut .75s cubic-bezier(.15,.8,.3,1)}
+@keyframes ringOut{0%{opacity:.9;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(46)}}
+
+/* 다음 문제 예고 */
+.intro{background:var(--card);border-radius:20px;padding:26px 18px;text-align:center;border:1px solid var(--line);
+       animation:cardIn .5s cubic-bezier(.2,1.3,.4,1) both}
+.intro .icat{font-family:var(--display);font-size:46px;line-height:1.15;color:var(--accent);animation:icat .7s cubic-bezier(.2,1.1,.3,1) both}
+.intro.mini .icat{font-size:30px;color:var(--violet)}
+@keyframes icat{0%{opacity:0;transform:scale(2);filter:blur(10px)}100%{opacity:1;transform:none;filter:none}}
+.intro .istars{margin-top:8px;font-size:30px;letter-spacing:6px;color:var(--gold);line-height:1}
+.intro .istars span{display:inline-block;animation:starPop .45s cubic-bezier(.2,1.6,.4,1) both}
+.intro .istars span.off{color:rgba(255,255,255,.14)}
+@keyframes starPop{0%{opacity:0;transform:scale(0) rotate(-90deg)}100%{opacity:1;transform:none}}
+.intro .ipts{margin-top:12px;font-family:var(--display);font-size:20px;animation:fxIn .5s .8s both}
+.intro .ipts b{color:var(--accent);font-weight:400;font-size:26px}
+.intro .ino{margin-top:6px;font-size:13px;color:var(--dim);animation:fxIn .5s 1s both}
+.q .t.cat{background:var(--accent);color:#0A0F1C;font-family:var(--display)}
+.q .t.stars{color:var(--gold);letter-spacing:1px}
+.q .t.stars i{font-style:normal;color:rgba(255,255,255,.18)}
+
+/* 물고기 잡기 */
+.fish{text-align:center;font-size:22px;min-height:30px;letter-spacing:2px}
+.cbar{position:relative;height:54px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid var(--line);overflow:hidden}
+.cbar .zone{position:absolute;top:0;bottom:0;background:rgba(63,224,168,.35);border-left:2px solid var(--mint);border-right:2px solid var(--mint);transition:left .25s,width .25s}
+.cbar .mark{position:absolute;top:6px;bottom:6px;width:6px;margin-left:-3px;border-radius:3px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.cbar.miss{animation:missSh .35s}
+
+/* 글자 맞추기 */
+.tiles{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.tile{width:60px;height:60px;border-radius:14px;background:var(--card);border:2px solid var(--line);font-family:var(--display);font-size:26px;
+      transition:transform .12s,opacity .2s,background .2s}
+.tile:active{transform:scale(.93)}
+.tile.used{opacity:.18;transform:scale(.85);pointer-events:none}
+.tile.bad{border-color:var(--coral);animation:sh .3s}
+
+/* 대기실 점프 게임 */
+.wrap{overflow-y:auto}
+.jw{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);
+    background:linear-gradient(180deg,#0E1830,#16223A);flex-shrink:0}
+#jc{display:block;width:100%;height:172px;touch-action:none}
+.jsc{position:absolute;top:8px;right:12px;text-align:right;line-height:1.3;pointer-events:none;
+     font-family:var(--display);font-size:17px;color:var(--paper)}
+.jsc i{display:block;font-style:normal;font-size:11px;color:var(--dim)}
+.jover{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;
+       background:rgba(7,12,24,.7);font-family:var(--display);font-size:16px;color:var(--accent);
+       text-align:center;padding:14px;line-height:1.55}
+.lbtop{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.lbrow{display:flex;gap:7px;align-items:center;background:var(--card);border:1px solid transparent;
+       border-radius:9px;padding:5px 10px;font-size:13px}
+.lbrow .r{font-family:var(--display);color:var(--accent);font-size:12px}
+.lbrow .b{font-family:var(--display);color:var(--mint)}
+.lbrow.me{border-color:var(--accent)}
+
+@media (prefers-reduced-motion:reduce){
+  .dots::after{animation:none;content:'...'}
+  .flash.go,.oi.bad,.ring.go,body::before,.big:not(:disabled),.hud .streak,.rr.me,
+  .pbar i::after,.mg-top .tm.warn,.q .t.hot,.breathe,.card.ok,.card.no,.ob.win,
+  .mc.got,.oi.done,.sb.hit,.sb.miss{animation:none}
+  .fx-in,.q.fx-in,.ob.fx-in,.card.fx-in,.rr.fx-in,.mc.fx-in,.oi.fx-in,.gain,
+  .intro,.intro .icat,.intro .istars span,.intro .ipts,.intro .ino{animation:none;opacity:1;transform:none;filter:none}
+  .mc{transition:background .2s,border-color .2s}
+  .mc.up,.mc.got{transform:none}
+  .mc .f{transform:none}
+  .tick circle,.tick path{animation:none;stroke-dashoffset:0}
+}
 </style>
 </head>
 <body data-kind="bible">
 <div class="flash" id="flash"></div>
+<div class="ring" id="ring"></div>
+<canvas id="fx"></canvas>
 
 <div class="hud hide" id="hud">
   <div><div class="nm" id="h-name"></div><div class="rk" id="h-rank"></div></div>
@@ -149,11 +324,47 @@ input::placeholder{color:#5E7794}
 const socket = io({ reconnectionDelayMax: 3000 });
 const wrap = document.getElementById("wrap"), KEY = "bq_player";
 let me = JSON.parse(localStorage.getItem(KEY) || "null");
-let S = null, sending = false, lastPhase = "", miniSeed = null, MG = null, tick = null;
+let S = null, sending = false, lastPhase = "", miniSeed = null, MG = null, tick = null, viewKey = "";
 const $ = (id) => document.getElementById(id);
 const esc = (t) => String(t).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 const buzz = (p) => { try { navigator.vibrate && navigator.vibrate(p); } catch {} };
+const REDUCED = matchMedia("(prefers-reduced-motion:reduce)").matches;
 function flash(c){ const f = $("flash"); f.style.background = c; f.classList.remove("go"); void f.offsetWidth; f.classList.add("go"); }
+function replay(el, cls){ if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+function ring(color){
+  if (REDUCED) return;
+  const r = $("ring"); r.style.borderColor = color;
+  r.classList.remove("go"); void r.offsetWidth; r.classList.add("go");
+}
+
+/* 색종이 (폰이라 가볍게) */
+const CV = $("fx"), CX = CV.getContext("2d");
+const COLORS = ["#FFC24B","#3FE0A8","#FF6B6B","#55A8FF","#9B8CFF","#EEF3FA"];
+let parts = [], raf = null;
+function fitFx(){ CV.width = innerWidth; CV.height = innerHeight; }
+addEventListener("resize", fitFx); fitFx();
+function confetti(n = 60){
+  if (REDUCED) return;
+  for (let i = 0; i < n; i++) parts.push({
+    x: CV.width / 2 + (Math.random() - .5) * CV.width * .7, y: CV.height * .4 + (Math.random() - .5) * 60,
+    vx: (Math.random() - .5) * 7, vy: -4 - Math.random() * 7,
+    w: 5 + Math.random() * 6, h: 8 + Math.random() * 9,
+    a: Math.random() * Math.PI, va: (Math.random() - .5) * .32,
+    c: COLORS[(Math.random() * COLORS.length) | 0],
+  });
+  if (!raf) raf = requestAnimationFrame(stepFx);
+}
+function stepFx(){
+  CX.clearRect(0, 0, CV.width, CV.height);
+  parts = parts.filter(p => p.y < CV.height + 40);
+  parts.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.vy += .26; p.vx *= .99; p.a += p.va;
+    CX.save(); CX.translate(p.x, p.y); CX.rotate(p.a); CX.fillStyle = p.c;
+    CX.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); CX.restore();
+  });
+  if (parts.length) raf = requestAnimationFrame(stepFx);
+  else { raf = null; CX.clearRect(0, 0, CV.width, CV.height); }
+}
 /* 시드 난수 — 모두 같은 문제로 공정하게 */
 function rng(seed){ let a = seed >>> 0; return () => { a += 0x6D2B79F5; let t = a; t = Math.imul(t ^ t>>>15, t|1); t ^= t + Math.imul(t ^ t>>>7, t|61); return ((t ^ t>>>14) >>> 0) / 4294967296; }; }
 function shuffle(arr, rand){ const a = arr.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(rand()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
@@ -179,26 +390,45 @@ function renderJoin(err){
 
 function render(s){
   const mg = s.phase === "minigame" || s.phase === "minigame_result";
-  document.body.dataset.kind = mg ? "mini" : (s.question ? s.question.kind : "bible");
+  document.body.dataset.kind = mg ? "mini"
+    : s.phase === "intro" ? (s.intro?.type === "minigame" ? "mini" : (s.intro?.kind || "bible"))
+    : (s.question ? s.question.kind : "bible");
   $("hud").classList.remove("hide");
   $("h-name").textContent = s.me?.name || "";
-  $("h-score").textContent = (s.me?.score ?? 0) + "점";
+  const sc = $("h-score"), txt = (s.me?.score ?? 0) + "점";
+  if (sc.textContent !== txt) { sc.textContent = txt; replay(sc, "bump"); }
   $("h-rank").textContent = s.me?.rank ? `${s.playerCount}명 중 ${s.me.rank}등` : "";
   $("h-streak").textContent = (s.me?.streak >= 2) ? `${s.me.streak}연속 정답` : "";
   $("foot").textContent = "";
 
   if (s.phase !== lastPhase) {
     if (tick) { clearInterval(tick); tick = null; }
+    if (s.phase === "intro") buzz([20, 40, 20]);
     if (s.phase === "question") buzz(30);
     if (s.phase === "minigame") buzz([30, 50, 30]);
     if (s.phase === "grading" && s.myAnswer) {
-      if (s.myAnswer.correct) { flash("radial-gradient(circle,rgba(63,224,168,.55),transparent 70%)"); buzz([40,60,40]); }
-      else { flash("radial-gradient(circle,rgba(255,107,107,.4),transparent 70%)"); buzz(180); }
+      if (s.myAnswer.correct) {
+        flash("radial-gradient(circle,rgba(63,224,168,.55),transparent 70%)");
+        ring("var(--mint)"); confetti(70); buzz([40,60,40]);
+      } else { flash("radial-gradient(circle,rgba(255,107,107,.4),transparent 70%)"); buzz(180); }
     }
+    if (s.phase === "finished") confetti(90);
+    if (s.phase !== "lobby") { lobbyBuilt = false; stopJump(); }
     lastPhase = s.phase;
   }
 
+  // 같은 내용이면 다시 그리지 않는다 (입력 중인 답이 지워지거나 애니메이션이 다시 시작되는 것 방지)
+  const a = s.myAnswer;
+  const key = [s.phase, s.question?.no ?? "-", s.question?.points ?? "-", s.intro ? s.intro.no + ":" + s.intro.points : "-",
+               a ? a.text + (a.correct ? 1 : 0) : "-",
+               s.me?.score, s.me?.rank, s.playerCount, s.lobbyBest ?? 0,
+               (s.lobbyTop || []).map(x => x.name + ":" + x.best).join(","),
+               s.mini ? s.mini.seed + ":" + s.mini.doneCount + ":" + s.mini.myDone : "-"].join("|");
+  if (key === viewKey && s.phase !== "minigame") return;
+  viewKey = key;
+
   if (s.phase === "lobby") return viewLobby(s);
+  if (s.phase === "intro") return viewIntro(s);
   if (s.phase === "question") return s.myAnswer ? viewWaiting(s) : viewAnswer(s);
   if (s.phase === "grading") return viewResult(s);
   if (s.phase === "minigame") return viewMini(s);
@@ -209,27 +439,202 @@ function render(s){
 const SYM = ["▲", "◆", "●", "■"];
 function qBlock(s){
   const q = s.question;
-  return `<div class="q"><div class="tags">
-      <span class="t">${q.no}번</span><span class="t">${q.type === "choice" ? "객관식" : "주관식"}</span>
+  const stars = q.difficulty ? Array.from({length:3}, (_, i) => i < q.difficulty ? "★" : "<i>★</i>").join("") : "";
+  return `<div class="q fx-in"><div class="tags">
+      <span class="t">${q.no}번</span>
+      ${q.category ? `<span class="t cat">${esc(q.category)}</span>` : ""}
+      ${stars ? `<span class="t stars">${stars}</span>` : ""}
+      <span class="t">${q.type === "choice" ? "객관식" : "주관식"}</span>
       ${q.kind === "nonsense" ? '<span class="t hot">넌센스 타임</span>' : ""}
       <span class="t">${q.points}점</span></div>
     <div class="tx">${esc(q.text)}</div>
     ${q.hint ? `<div class="hint">힌트 · ${esc(q.hint)}</div>` : ""}</div>`;
 }
 
+let lobbyBuilt = false, J = null;
+
 function viewLobby(s){
-  wrap.innerHTML = `<h1>입장 완료!</h1>
-    <p class="sub" style="text-align:left">선생님이 첫 문제를 열면 여기에 바로 나타납니다.<br />화면을 끄지 말고 기다려 주세요.</p>
-    <div class="card"><div class="big-t dots">준비 중</div>
-    <div class="sm">지금까지 ${s.playerCount}명이 들어왔어요</div></div>`;
+  if (!lobbyBuilt) {
+    lobbyBuilt = true;
+    wrap.innerHTML = `<h1 class="fx-in">입장 완료!</h1>
+      <p class="sub fx-in" style="text-align:left;animation-delay:.1s">선생님이 문제를 열면 여기에 바로 나타납니다.<br />기다리는 동안 <b>양 점프</b>로 놀고 있어요. 화면을 누르면 뜁니다.</p>
+      <div class="jw fx-in" id="jw" style="animation-delay:.18s">
+        <canvas id="jc"></canvas>
+        <div class="jsc"><span id="j-now">0</span><i>내 최고 <span id="j-best">0</span></i></div>
+        <div class="jover" id="j-over">화면을 눌러 시작!</div>
+      </div>
+      <div class="lbtop" id="lb-top"></div>
+      <div class="card fx-in" style="animation-delay:.3s"><div class="big-t dots breathe" id="lb-count">0명</div>
+      <div class="sm">선생님이 시작하면 자동으로 문제 화면이 열립니다</div></div>`;
+    startJump();
+  }
+  $("lb-count").textContent = s.playerCount + "명";
+  $("j-best").textContent = Math.max(s.lobbyBest || 0, J ? Math.floor(J.best) : 0);
+
+  const box = $("lb-top"); box.innerHTML = "";
+  (s.lobbyTop || []).forEach((p, i) => {
+    const d = document.createElement("div");
+    d.className = "lbrow" + (p.name === s.me?.name ? " me" : "");
+    d.innerHTML = `<span class="r">${i + 1}</span><span class="n"></span><span class="b">${p.best}</span>`;
+    d.querySelector(".n").textContent = p.name;
+    box.appendChild(d);
+  });
+}
+
+/* ── 대기실 점프 게임 (양이 돌을 넘습니다) ── */
+function stopJump(){
+  if (!J) return;
+  if (J.alive && J.score >= 1) socket.emit("player:lobbyScore", Math.floor(J.score));
+  cancelAnimationFrame(J.raf);
+  removeEventListener("resize", J.onResize);
+  J = null;
+}
+
+function startJump(){
+  const cv = $("jc"), ctx = cv.getContext("2d");
+  if (!ctx) return;
+  const C = { ground:"#31456A", line:"#22314D", sheep:"#EEF3FA", dark:"#0A0F1C",
+              rock:"#5B6A85", rockTop:"#8494B0", cloud:"rgba(255,255,255,.07)" };
+  let W = 0, H = 0;
+
+  function fit(){
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = cv.clientWidth || 320; H = cv.clientHeight || 172;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  fit();
+
+  J = { raf:0, alive:false, started:false, score:0, best:0, speed:4.2, t:0,
+        y:0, vy:0, obs:[], next:420, clouds:[], last:0, onResize:fit };
+  addEventListener("resize", fit);
+  for (let i = 0; i < 4; i++)
+    J.clouds.push({ x: Math.random() * W, y: 16 + Math.random() * 46, s: .25 + Math.random() * .35, w: 26 + Math.random() * 26 });
+
+  const GY = () => H - 26;
+
+  function reset(){
+    J.alive = true; J.started = true; J.score = 0; J.speed = 4.2;
+    J.y = 0; J.vy = 0; J.obs = []; J.next = 420; J.t = 0;
+    $("j-over").classList.add("hide");
+  }
+  function tap(){
+    if (!J.alive) { reset(); return; }
+    if (J.y <= 0.5) { J.vy = 11.5; buzz(12); }
+  }
+  $("jw").addEventListener("pointerdown", (e) => { e.preventDefault(); tap(); });
+  document.addEventListener("keydown", (e) => {
+    if (!J || e.code !== "Space" || S?.phase !== "lobby") return;
+    e.preventDefault(); tap();
+  });
+
+  function die(){
+    J.alive = false;
+    const sc = Math.floor(J.score);
+    if (sc > J.best) J.best = sc;
+    $("j-best").textContent = Math.max(J.best, S?.lobbyBest || 0);
+    $("j-over").textContent = `${sc}점! 화면을 눌러 다시 시작`;
+    $("j-over").classList.remove("hide");
+    buzz([60, 40, 90]);
+    if (sc >= 1) socket.emit("player:lobbyScore", sc);
+  }
+
+  function loop(now){
+    J.raf = requestAnimationFrame(loop);
+    const k = J.last ? Math.min(3, (now - J.last) / 16.667) : 1;
+    J.last = now;
+
+    if (J.alive) {
+      J.t += k;
+      J.speed = Math.min(9.8, 4.2 + J.t * 0.0018);
+      J.score += J.speed * 0.05 * k;
+
+      J.vy -= 0.8 * k; J.y += J.vy * k;
+      if (J.y < 0) { J.y = 0; J.vy = 0; }
+
+      J.next -= J.speed * k;
+      if (J.next <= 0) {
+        J.obs.push({ x: W + 12, w: 13 + Math.random() * 12, h: 20 + Math.random() * 15 });
+        J.next = J.speed * (46 + Math.random() * 60);
+      }
+      J.obs.forEach(o => { o.x -= J.speed * k; });
+      J.obs = J.obs.filter(o => o.x + o.w > -20);
+
+      // 충돌 (살짝 너그럽게)
+      const sx = 34, sw = 25, sh = 23;
+      const sy = GY() - sh - J.y;
+      for (const o of J.obs) {
+        if (sx + sw - 3 > o.x + 2 && sx + 3 < o.x + o.w - 2 && sy + sh - 2 > GY() - o.h) { die(); break; }
+      }
+    }
+    J.clouds.forEach(c => { c.x -= c.s * k; if (c.x + c.w < -10) { c.x = W + 10; c.y = 16 + Math.random() * 46; } });
+
+    draw();
+  }
+
+  function draw(){
+    const g = GY();
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.fillStyle = C.cloud;
+    J.clouds.forEach(c => {
+      ctx.beginPath();
+      ctx.ellipse(c.x, c.y, c.w, c.w * .38, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.strokeStyle = C.ground; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, g + 1); ctx.lineTo(W, g + 1); ctx.stroke();
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2;
+    const off = (J.t * J.speed) % 26;
+    for (let x = -off; x < W; x += 26) {
+      ctx.beginPath(); ctx.moveTo(x, g + 9); ctx.lineTo(x + 11, g + 9); ctx.stroke();
+    }
+
+    J.obs.forEach(o => {
+      ctx.fillStyle = C.rock;
+      ctx.beginPath();
+      ctx.moveTo(o.x, g); ctx.lineTo(o.x + o.w * .18, g - o.h * .82);
+      ctx.lineTo(o.x + o.w * .55, g - o.h);
+      ctx.lineTo(o.x + o.w, g - o.h * .5); ctx.lineTo(o.x + o.w, g);
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = C.rockTop;
+      ctx.beginPath();
+      ctx.moveTo(o.x + o.w * .18, g - o.h * .82);
+      ctx.lineTo(o.x + o.w * .55, g - o.h);
+      ctx.lineTo(o.x + o.w * .62, g - o.h * .72);
+      ctx.closePath(); ctx.fill();
+    });
+
+    // 양
+    const bx = 34 + 12, by = g - 12 - J.y;
+    ctx.fillStyle = C.sheep;
+    ctx.beginPath(); ctx.ellipse(bx, by, 14, 10, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(bx - 9, by - 8, 5.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(bx + 4, by - 9, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.dark;
+    ctx.beginPath(); ctx.ellipse(bx + 12, by - 4, 6, 5.5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(bx + 14, by - 5.5, 1.4, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = C.dark; ctx.lineWidth = 3; ctx.lineCap = "round";
+    const sw2 = J.y > 0.5 ? 0 : Math.sin(J.t * .38) * 4;
+    ctx.beginPath();
+    ctx.moveTo(bx - 5, by + 8); ctx.lineTo(bx - 5 - sw2, by + 14);
+    ctx.moveTo(bx + 6, by + 8); ctx.lineTo(bx + 6 + sw2, by + 14);
+    ctx.stroke();
+
+    $("j-now").textContent = Math.floor(J.score);
+  }
+
+  J.raf = requestAnimationFrame(loop);
 }
 
 function viewAnswer(s){
   const q = s.question;
   if (q.type === "choice") {
     wrap.innerHTML = qBlock(s) + `<div class="opts">${q.options.map((o,i) =>
-      `<button class="ob b${i}" data-i="${i}"><span class="s">${SYM[i]}</span><span class="l">${esc(o)}</span></button>`).join("")}
-      </div><p class="sub">한 번 고르면 바꿀 수 없어요. 신중하게!</p>`;
+      `<button class="ob b${i} fx-in" style="animation-delay:${140 + i * 85}ms" data-i="${i}"><span class="s">${SYM[i]}</span><span class="l">${esc(o)}</span></button>`).join("")}
+      </div><p class="sub fx-in" style="animation-delay:.5s">한 번 고르면 바꿀 수 없어요. 신중하게!</p>`;
     wrap.querySelectorAll(".ob").forEach(b => b.onclick = () => {
       if (sending) return; sending = true; buzz(25); b.classList.add("picked");
       socket.emit("player:answer", Number(b.dataset.i));
@@ -237,8 +642,9 @@ function viewAnswer(s){
     });
     return;
   }
-  wrap.innerHTML = qBlock(s) + `<input id="ans" maxlength="60" placeholder="답을 적어 주세요" autocomplete="off" enterkeyhint="send" />
-    <button class="big" id="sub">제출하기</button><p class="sub">한 문제에 한 번만 제출할 수 있어요.</p>`;
+  wrap.innerHTML = qBlock(s) + `<input class="fx-in" style="animation-delay:.14s" id="ans" maxlength="60" placeholder="답을 적어 주세요" autocomplete="off" enterkeyhint="send" />
+    <button class="big fx-in" style="animation-delay:.24s" id="sub">제출하기</button>
+    <p class="sub fx-in" style="animation-delay:.34s">한 문제에 한 번만 제출할 수 있어요.</p>`;
   const ans = $("ans");
   const send = () => { if (sending || !ans.value.trim()) return; sending = true; buzz(25);
     socket.emit("player:answer", ans.value); setTimeout(() => (sending = false), 600); };
@@ -248,9 +654,11 @@ function viewAnswer(s){
 }
 
 function viewWaiting(s){
-  wrap.innerHTML = qBlock(s) + `<div class="card"><div class="big-t">제출 완료</div>
+  wrap.innerHTML = qBlock(s) + `<div class="card fx-in" style="animation-delay:.12s">
+    <svg class="tick" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24"/><path d="M17 29l8 8 15-16"/></svg>
+    <div class="big-t">제출 완료</div>
     <div class="sm">곧 모두의 답이 화면에 공개됩니다</div></div>
-    <div class="mine">내가 낸 답 · <b id="mt"></b></div>`;
+    <div class="mine fx-in" style="animation-delay:.3s">내가 낸 답 · <b id="mt"></b></div>`;
   $("mt").textContent = s.myAnswer.text;
 }
 
@@ -261,14 +669,14 @@ function viewResult(s){
   let opt = "";
   if (q.type === "choice") opt = `<div class="opts">${q.options.map((o,i) => {
     const c = i === s.correctIndex ? "win" : (a && a.choice === i ? "picked" : "dim");
-    return `<button class="ob b${i} ${c}" disabled><span class="s">${SYM[i]}</span><span class="l">${esc(o)}</span></button>`;
+    return `<button class="ob b${i} ${c}" style="animation-delay:${200 + i * 80}ms" disabled><span class="s">${SYM[i]}</span><span class="l">${esc(o)}</span></button>`;
   }).join("")}</div>`;
-  wrap.innerHTML = `<div class="card ${cls}"><div class="big-t">${head}</div>
+  wrap.innerHTML = `<div class="card ${cls} ${cls ? "" : "fx-in"}"><div class="big-t">${head}</div>
       ${a && a.correct ? `<div class="gain">+${s.me.lastGain}점</div>` : ""}
       <div class="sm">정답 · <b id="ca"></b></div></div>
     ${opt}
-    ${a && q.type !== "choice" ? `<div class="mine">내가 낸 답 · <b id="mt"></b></div>` : ""}
-    <div class="card"><div class="big-t">${s.me?.score ?? 0}점</div>
+    ${a && q.type !== "choice" ? `<div class="mine fx-in" style="animation-delay:.35s">내가 낸 답 · <b id="mt"></b></div>` : ""}
+    <div class="card fx-in" style="animation-delay:.45s"><div class="big-t">${s.me?.score ?? 0}점</div>
     <div class="sm">${s.playerCount}명 중 <b>${s.me?.rank}등</b>${s.me?.streak >= 2 ? ` · ${s.me.streak}연속 정답 중` : ""}</div></div>`;
   $("ca").textContent = s.correctAnswer || "";
   if ($("mt")) $("mt").textContent = a.text;
@@ -284,27 +692,45 @@ function viewMiniResult(s){
     <div class="card"><div class="big-t">${s.me?.score ?? 0}점</div>
     <div class="sm">${s.playerCount}명 중 <b>${s.me?.rank}등</b></div></div>`;
   const rk = $("rk");
-  m.top.forEach(f => {
+  m.top.forEach((f, i) => {
     const d = document.createElement("div");
-    d.className = "rr" + (f.name === s.me?.name ? " me" : "");
+    d.className = "rr fx-in" + (f.name === s.me?.name ? " me" : "");
+    d.style.animationDelay = (150 + i * 80) + "ms";
     d.innerHTML = `<div class="n">${f.rank}</div><div class="w"></div><div class="p">${f.sec}초</div>`;
     d.querySelector(".w").textContent = f.name; rk.appendChild(d);
   });
 }
 
+const DIFF_NAME = { 1: "쉬움", 2: "보통", 3: "어려움" };
+function viewIntro(s){
+  const q = s.intro; if (!q) return;
+  const mini = q.type === "minigame";
+  const stars = mini ? "" : Array.from({length:3}, (_, i) =>
+    `<span class="${i < q.difficulty ? "" : "off"}" style="animation-delay:${.45 + i * .15}s">★</span>`).join("");
+  wrap.innerHTML = `<p class="sub fx-in" style="letter-spacing:3px">다음 문제</p>
+    <div class="intro ${mini ? "mini" : ""}">
+      <div class="icat">${esc(mini ? q.name : q.category)}</div>
+      ${stars ? `<div class="istars">${stars}</div>` : ""}
+      <div class="ipts">${mini ? "미니게임 · 완주 순서대로 점수" : `<b>${q.points}</b>점 · ${DIFF_NAME[q.difficulty] || ""}`}</div>
+      <div class="ino">${q.no}번${mini ? "" : ` · ${q.type === "choice" ? "객관식" : "주관식"}`}${q.kind === "nonsense" ? " · 넌센스 타임" : ""}</div>
+    </div>
+    <p class="sub fx-in" style="animation-delay:.9s">${mini ? "손가락을 풀어 두세요!" : "잠시 뒤 문제가 열립니다. 준비!"}</p>`;
+}
+
 function viewBoard(s){
   const fin = s.phase === "finished";
-  wrap.innerHTML = `<h1>${fin ? "최종 순위" : "지금 순위"}</h1><div class="ranks" id="rk"></div>
-    <div class="card"><div class="big-t">${s.me?.score ?? 0}점</div>
+  wrap.innerHTML = `<h1 class="fx-in">${fin ? "최종 순위" : "지금 순위"}</h1><div class="ranks" id="rk"></div>
+    <div class="card fx-in" style="animation-delay:.6s"><div class="big-t">${s.me?.score ?? 0}점</div>
     <div class="sm">${s.playerCount}명 중 <b>${s.me?.rank}등</b></div></div>`;
   const rk = $("rk");
   s.top.forEach((p, i) => {
     const d = document.createElement("div");
-    d.className = "rr" + (p.name === s.me?.name ? " me" : "");
+    d.className = "rr fx-in" + (p.name === s.me?.name ? " me" : "");
+    d.style.animationDelay = (120 + i * 85) + "ms";
     d.innerHTML = `<div class="n">${i+1}</div><div class="w"></div><div class="p">${p.score}</div>`;
     d.querySelector(".w").textContent = p.name; rk.appendChild(d);
   });
-  $("foot").textContent = fin ? "수고했어요! 오늘도 말씀 안에서 승리 🎉" : "다음 순서를 기다리는 중";
+  $("foot").textContent = fin ? "수고했어요! 오늘도 말씀 안에서 승리 🎉" : "선생님이 다음 문제를 고르고 있어요";
 }
 
 /* ══════════ 미니게임 ══════════ */
@@ -344,7 +770,132 @@ function viewMini(s){
     if (el) { el.textContent = `${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`; el.classList.toggle("warn", left <= 10); }
     if (left === 0) { clearInterval(tick); tick = null; }
   }, 300);
-  ({ memory: gameMemory, order: gameOrder, speed: gameSpeed })[m.game](m);
+  ({ memory: gameMemory, order: gameOrder, speed: gameSpeed, verse: gameVerse, catch: gameCatch, scramble: gameScramble })[m.game](m);
+}
+
+/* 4) 말씀 빈칸 채우기 */
+const VERSES = [
+  { t: "하나님이 세상을 이처럼 사랑하사 ___를 주셨으니", a: "독생자", o: ["천사", "선지자", "제사장"], r: "요 3:16" },
+  { t: "여호와는 나의 ___시니 내게 부족함이 없으리로다", a: "목자", o: ["왕", "빛", "반석"], r: "시 23:1" },
+  { t: "태초에 하나님이 ___를 창조하시니라", a: "천지", o: ["사람", "빛", "바다"], r: "창 1:1" },
+  { t: "내게 ___ 주시는 자 안에서 내가 모든 것을 할 수 있느니라", a: "능력", o: ["지혜", "믿음", "소망"], r: "빌 4:13" },
+  { t: "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 ___ 하리라", a: "쉬게", o: ["기쁘게", "강하게", "부하게"], r: "마 11:28" },
+  { t: "여호와를 경외하는 것이 ___의 근본이어늘", a: "지식", o: ["사랑", "기쁨", "축복"], r: "잠 1:7" },
+  { t: "주의 말씀은 내 발에 ___이요 내 길에 빛이니이다", a: "등", o: ["신", "길", "힘"], r: "시 119:105" },
+  { t: "네 ___을 다하고 목숨을 다하고 뜻을 다하여 주 너의 하나님을 사랑하라", a: "마음", o: ["시간", "재물", "지혜"], r: "마 22:37" },
+  { t: "내가 곧 길이요 ___요 생명이니", a: "진리", o: ["사랑", "빛", "평안"], r: "요 14:6" },
+  { t: "항상 기뻐하라 쉬지 말고 ___하라 범사에 감사하라", a: "기도", o: ["찬양", "노래", "일"], r: "살전 5:16-18" },
+];
+function gameVerse(m){
+  const rand = rng(m.seed);
+  const set = shuffle(VERSES, rand).slice(0, 8);
+  let i = 0, lock = false;
+  const box = $("mgbox");
+  function draw(){
+    const v = set[i];
+    const opts = shuffle([v.a, ...v.o], rng(m.seed + i * 131));
+    box.innerHTML = `<div class="setlab">${i + 1} / ${set.length} · ${esc(v.r)}</div>
+      <div class="q" style="border-left-color:var(--violet)"><div class="tx" id="vtx"></div></div>
+      <div class="spd" id="vopts"></div>`;
+    $("vtx").textContent = v.t.replace("___", "＿＿");
+    const grid = $("vopts");
+    opts.forEach(w => {
+      const b = document.createElement("button");
+      b.className = "sb"; b.textContent = w;
+      b.onclick = () => {
+        if (lock) return;
+        if (w === v.a) {
+          lock = true; b.classList.add("hit"); buzz(20); ring("var(--mint)");
+          $("vtx").textContent = v.t.replace("___", v.a);
+          i++; setProgress(i / set.length);
+          $("mgsub").textContent = `${i} / ${set.length} 구절`;
+          if (i >= set.length) return finishMini();
+          setTimeout(() => { lock = false; draw(); }, 520);
+        } else { b.classList.add("miss"); buzz(120); setTimeout(() => b.classList.remove("miss"), 350); }
+      };
+      grid.appendChild(b);
+    });
+  }
+  draw();
+  $("mgsub").textContent = "빈칸에 들어갈 말씀을 고르세요";
+  setProgress(0);
+}
+
+/* 5) 베드로의 물고기 잡기 (타이밍) */
+function gameCatch(m){
+  const rand = rng(m.seed), GOAL = 10;
+  let caught = 0, pos = 0, dir = 1, speed = 1.15, zoneW = 26, zoneX = 37, raf = 0, last = 0, cool = false;
+  const box = $("mgbox");
+  box.innerHTML = `<div class="score-big" id="csc">0 / ${GOAL}</div>
+    <div class="fish" id="fish"></div>
+    <div class="cbar" id="cbar"><div class="zone" id="zone"></div><div class="mark" id="mark"></div></div>
+    <button class="big" id="cbtn">잡기!</button>`;
+  const zone = $("zone"), mark = $("mark");
+  function place(){ zoneW = Math.max(9, 26 - caught * 1.8); zoneX = 8 + rand() * (84 - zoneW); zone.style.left = zoneX + "%"; zone.style.width = zoneW + "%"; }
+  function loop(t){
+    raf = requestAnimationFrame(loop);
+    const k = last ? Math.min(3, (t - last) / 16.667) : 1; last = t;
+    if (!S || S.phase !== "minigame") return cancelAnimationFrame(raf);
+    pos += dir * speed * k;
+    if (pos >= 100) { pos = 100; dir = -1; } else if (pos <= 0) { pos = 0; dir = 1; }
+    mark.style.left = pos + "%";
+  }
+  const tryCatch = () => {
+    if (cool) return; cool = true; setTimeout(() => (cool = false), 220);
+    if (pos >= zoneX && pos <= zoneX + zoneW) {
+      caught++; speed += .22; buzz([20, 30]); ring("var(--mint)");
+      $("csc").textContent = `${caught} / ${GOAL}`; replay($("csc"), "bump");
+      $("fish").textContent += "🐟";
+      setProgress(caught / GOAL);
+      if (caught >= GOAL) { cancelAnimationFrame(raf); return finishMini(); }
+      place();
+    } else { buzz(120); replay($("cbar"), "miss"); }
+  };
+  $("cbtn").onclick = tryCatch;
+  $("cbar").onclick = tryCatch;
+  place(); raf = requestAnimationFrame(loop);
+  $("mgsub").textContent = "표시가 초록 구간에 들어올 때 누르세요";
+  setProgress(0);
+}
+
+/* 6) 이름 글자 맞추기 */
+const NAMES = ["아브라함", "느부갓네살", "므두셀라", "바돌로매", "여호수아", "나다나엘", "스룹바벨", "멜기세덱", "삭개오", "니고데모", "브리스길라", "히스기야"];
+function gameScramble(m){
+  const rand = rng(m.seed);
+  const set = shuffle(NAMES, rand).slice(0, 8);
+  let i = 0, step = 0;
+  const box = $("mgbox");
+  function draw(){
+    const name = set[i], chars = name.split("");
+    let tiles = shuffle(chars.map((c, k) => ({ c, k })), rng(m.seed + i * 613));
+    if (tiles.every((t, k) => t.k === k)) tiles = tiles.reverse();   // 우연히 정답 순서면 뒤집기
+    step = 0;
+    box.innerHTML = `<div class="setlab">${i + 1} / ${set.length} · ${chars.length}글자</div>
+      <div class="score-big" id="sname" style="letter-spacing:6px;min-height:52px">${"＿".repeat(chars.length)}</div>
+      <div class="tiles" id="tiles"></div>`;
+    const grid = $("tiles");
+    tiles.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tile"; b.textContent = t.c;
+      b.onclick = () => {
+        if (b.classList.contains("used")) return;
+        if (t.k === step) {
+          step++; b.classList.add("used"); buzz(18);
+          $("sname").textContent = name.slice(0, step) + "＿".repeat(chars.length - step);
+          if (step === chars.length) {
+            i++; setProgress(i / set.length); ring("var(--mint)"); buzz([25, 40]);
+            $("mgsub").textContent = `${i} / ${set.length} 명`;
+            if (i >= set.length) return finishMini();
+            setTimeout(draw, 550);
+          }
+        } else { b.classList.add("bad"); buzz(120); setTimeout(() => b.classList.remove("bad"), 330); }
+      };
+      grid.appendChild(b);
+    });
+  }
+  draw();
+  $("mgsub").textContent = "글자를 순서대로 눌러 이름을 만드세요";
+  setProgress(0);
 }
 
 function setProgress(p){
@@ -352,7 +903,11 @@ function setProgress(p){
   const b = $("mpb"); if (b) b.style.width = Math.round(p * 100) + "%";
   socket.emit("mini:progress", p);
 }
-function finishMini(){ socket.emit("mini:done"); buzz([50,60,50,60,90]); flash("radial-gradient(circle,rgba(63,224,168,.5),transparent 70%)"); }
+function finishMini(){
+  socket.emit("mini:done"); buzz([50,60,50,60,90]);
+  flash("radial-gradient(circle,rgba(63,224,168,.5),transparent 70%)");
+  ring("var(--mint)"); confetti(80);
+}
 
 /* 1) 기억력 카드 뒤집기 */
 function gameMemory(m){
@@ -364,7 +919,8 @@ function gameMemory(m){
   let up = [], got = 0, lock = false;
   deck.forEach((w, i) => {
     const c = document.createElement("button");
-    c.className = "mc"; c.dataset.w = w; c.dataset.i = i;
+    c.className = "mc fx-in"; c.style.animationDelay = (i * 35) + "ms";
+    c.dataset.w = w; c.dataset.i = i;
     c.innerHTML = `<span class="back">✦</span><span class="f">${esc(w)}</span>`;
     c.onclick = () => {
       if (lock || c.classList.contains("up") || c.classList.contains("got")) return;
@@ -377,7 +933,7 @@ function gameMemory(m){
           a.classList.add("got"); b.classList.add("got");
           a.classList.remove("up"); b.classList.remove("up");
           up = []; lock = false; got++;
-          buzz([25, 40]);
+          buzz([25, 40]); ring("var(--mint)");
           setProgress(got / PAIRS.length);
           $("mgsub").textContent = `${got} / ${PAIRS.length} 쌍을 찾았어요`;
           if (got === PAIRS.length) finishMini();
@@ -455,6 +1011,7 @@ function gameSpeed(m){
       if (b.dataset.real === "1") { score++; b.classList.add("hit"); buzz(20); }
       else { score = Math.max(0, score - 1); b.classList.add("miss"); buzz(140); }
       $("ssc").textContent = `${score} / ${GOAL}`;
+      replay($("ssc"), "bump");
       setProgress(Math.min(1, score / GOAL));
       if (score >= GOAL) return finishMini();
       setTimeout(() => fill(b), 180);

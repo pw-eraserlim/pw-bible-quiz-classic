@@ -36,29 +36,51 @@ const MINIGAMES = {
     tip: "30초 안에 15개! 가짜 책 이름을 누르면 하나씩 깎입니다.",
     limit: 34,
   },
+  verse: {
+    name: "말씀 빈칸 채우기",
+    desc: "유명한 말씀의 빈칸에 들어갈 단어를 네 개 중에서 고르세요.",
+    tip: "8구절을 다 맞히면 완주. 틀리면 잠깐 멈춥니다.",
+    limit: 90,
+  },
+  catch: {
+    name: "베드로의 물고기 잡기",
+    desc: "움직이는 표시가 초록 구간 안에 있을 때 누르면 물고기를 잡습니다.",
+    tip: "10마리를 잡으면 완주. 잡을수록 빨라지고 구간이 좁아집니다.",
+    limit: 70,
+  },
+  scramble: {
+    name: "이름 글자 맞추기",
+    desc: "섞여 있는 글자를 순서대로 눌러 성경 인물의 이름을 완성하세요.",
+    tip: "8명을 다 맞히면 완주. 틀린 글자는 튕겨 나옵니다.",
+    limit: 90,
+  },
 };
 
 /* ---------------- 문제 불러오기 ---------------- */
 const QUESTION_FILE = path.join(__dirname, "questions.json");
+const CATEGORY_DEFAULT = { nonsense: "넌센스", bible: "성경" };
 function loadQuestions() {
   try {
     const raw = JSON.parse(fs.readFileSync(QUESTION_FILE, "utf8"));
     return raw.map((q, i) => {
       if (q.type === "minigame") {
         const g = MINIGAMES[q.game] ? q.game : "memory";
-        return { no: i + 1, type: "minigame", game: g, ...MINIGAMES[g] };
+        return { no: i + 1, type: "minigame", game: g, category: "미니게임", difficulty: 0, ...MINIGAMES[g] };
       }
+      const kind = q.kind === "nonsense" ? "nonsense" : "bible";
+      const d = Number(q.difficulty);
       return {
         no: i + 1,
         type: q.type === "choice" ? "choice" : "short",
-        kind: q.kind === "nonsense" ? "nonsense" : "bible",
+        kind,
+        category: (q.category || "").toString().trim() || CATEGORY_DEFAULT[kind],
+        difficulty: d >= 1 && d <= 3 ? Math.round(d) : 2,
         text: q.text || "",
         options: Array.isArray(q.options) ? q.options : [],
         answerIndex: Number.isInteger(q.answerIndex) ? q.answerIndex : -1,
         answer: q.answer || "",
         alternates: q.alternates || [],
         hint: q.hint || "",
-        points: q.points || 100,
         reference: q.reference || "",
       };
     });
@@ -70,15 +92,30 @@ function loadQuestions() {
 
 /* ---------------- 게임 상태 ---------------- */
 const game = {
-  phase: "lobby", // lobby | question | grading | minigame | minigame_result | leaderboard | finished
+  phase: "lobby", // lobby | intro | question | grading | minigame | minigame_result | leaderboard | finished
   questions: loadQuestions(),
   index: -1,
   openedAt: 0,
   speedBonus: true,
+  basePoints: 100,      // 난이도 ★★ 기준 점수
+  points: new Map(),    // 문제번호 -> 호스트가 바꾼 점수
+  done: new Set(),      // 이미 푼 문제 번호 (선택판에서 사라짐)
+  lastDone: 0,          // 방금 푼 문제 번호 (선택판에서 사라지는 애니메이션용)
+  introTimer: null,
   players: new Map(),
   answers: new Map(),
   mini: null, // {seed, results:Map(pid->{pct,doneAt}), order:[pid], timer}
 };
+
+/* 난이도별 배점 배율: ★ 1배, ★★ 1.5배, ★★★ 2배 (기본 100점이면 100 / 150 / 200) */
+const DIFF_MULT = { 0: 1, 1: 1, 2: 1.5, 3: 2 };
+const clampPoints = (v) => Math.max(0, Math.min(1000, Math.round((Number(v) || 0) / 10) * 10));
+/* 이 문제에 실제로 적용되는 점수 (호스트가 바꿨으면 그 값, 아니면 기본 점수 × 난이도 배율) */
+function qPoints(q) {
+  if (!q) return game.basePoints;
+  if (game.points.has(q.no)) return game.points.get(q.no);
+  return clampPoints(game.basePoints * (DIFF_MULT[q.difficulty] ?? 1));
+}
 
 const normalize = (s) =>
   (s || "").toString().toLowerCase().replace(/\s+/g, "").replace(/[.,!?"'’“”·~\-()[\]]/g, "");
@@ -99,21 +136,26 @@ function ranked() {
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, "ko"));
 }
 
-/* 답 공개용: 한 사람 한 카드, 이름 그대로 */
-function answerCards() {
+/* 답 공개용: 같은 답끼리 한 카드로 묶는다 (이름은 내보내지 않음) */
+function answerGroups() {
   const q = currentQuestion();
-  return [...game.answers.entries()]
-    .map(([pid, a]) => ({
-      id: pid,
-      name: game.players.get(pid)?.name || "?",
-      text: a.text,
-      key: q.type === "choice" ? "c" + a.choice : normalize(a.text),
-      choice: a.choice,
-      seconds: a.seconds,
-      order: a.order,
-      correct: a.correct,
-    }))
-    .sort((a, b) => (b.correct - a.correct) || a.order - b.order);
+  if (!q) return [];
+  const map = new Map();
+  for (const a of game.answers.values()) {
+    const key = q.type === "choice" ? "c" + a.choice : normalize(a.text);
+    let g = map.get(key);
+    if (!g) {
+      g = { key, text: a.text, choice: a.choice, count: 0, correct: !!a.correct, order: a.order, fastest: a.seconds };
+      map.set(key, g);
+    }
+    g.count++;
+    g.correct = !!a.correct;                        // 그룹은 항상 함께 채점된다
+    if (a.order < g.order) { g.order = a.order; g.text = a.text; }
+    if (a.seconds < g.fastest) g.fastest = a.seconds;
+  }
+  return [...map.values()].sort(
+    (a, b) => (b.correct - a.correct) || (b.count - a.count) || (a.order - b.order)
+  );
 }
 
 function miniView() {
@@ -137,6 +179,30 @@ function miniView() {
   };
 }
 
+function lobbyTop() {
+  return [...game.players.values()]
+    .filter((p) => (p.lobbyBest || 0) > 0)
+    .sort((a, b) => (b.lobbyBest || 0) - (a.lobbyBest || 0))
+    .slice(0, 6)
+    .map((p) => ({ name: p.name, best: p.lobbyBest }));
+}
+
+/* 선택판용 문제 목록 */
+function questionList() {
+  return game.questions.map((q) => ({
+    no: q.no, type: q.type, kind: q.kind, category: q.category, difficulty: q.difficulty,
+    points: q.type === "minigame" ? 0 : qPoints(q),
+    game: q.game || null, name: q.name || null,
+    done: game.done.has(q.no),
+  }));
+}
+function introInfo() {
+  const q = currentQuestion();
+  if (game.phase !== "intro" || !q) return null;
+  return { no: q.no, type: q.type, kind: q.kind, category: q.category, difficulty: q.difficulty,
+           points: q.type === "minigame" ? 0 : qPoints(q), name: q.name || null, until: game.introUntil || 0 };
+}
+
 function hostState() {
   const q = currentQuestion();
   const board = ranked();
@@ -144,15 +210,22 @@ function hostState() {
     phase: game.phase,
     index: game.index,
     total: game.questions.length,
+    doneCount: game.done.size,
+    lastDone: game.lastDone,
+    list: questionList(),
+    intro: introInfo(),
     speedBonus: game.speedBonus,
+    basePoints: game.basePoints,
+    points: qPoints(q),
     openedAt: game.openedAt,
-    question: q && { ...q },
-    cards: game.phase === "grading" ? answerCards() : [],
+    question: q && { ...q, points: qPoints(q) },
+    groups: game.phase === "grading" ? answerGroups() : [],
     mini: (game.phase === "minigame" || game.phase === "minigame_result") ? miniView() : null,
     submittedNames: game.phase === "question"
       ? [...game.answers.keys()].map((id) => game.players.get(id)?.name || "?") : [],
     submitted: game.answers.size,
     connected: board.filter((p) => p.connected).length,
+    lobbyTop: lobbyTop(),
     board,
   };
 }
@@ -169,8 +242,11 @@ function playerState(id) {
     me: p && { name: p.name, score: p.score, streak: p.streak || 0, lastGain: p.lastGain || 0,
                rank: board.findIndex((x) => x.id === id) + 1 },
     total: game.questions.length,
+    doneCount: game.done.size,
+    intro: introInfo(),
     question: q && ["question", "grading"].includes(game.phase)
-      ? { no: q.no, type: q.type, kind: q.kind, text: q.text, options: q.options, hint: q.hint, points: q.points }
+      ? { no: q.no, type: q.type, kind: q.kind, category: q.category, difficulty: q.difficulty,
+          text: q.text, options: q.options, hint: q.hint, points: qPoints(q) }
       : null,
     mini: mv && {
       game: mv.game, name: mv.name, desc: mv.desc, tip: mv.tip, limit: mv.limit, seed: mv.seed,
@@ -184,6 +260,8 @@ function playerState(id) {
     correctIndex: game.phase === "grading" && q ? q.answerIndex : -1,
     myAnswer: mine ? { text: mine.text, choice: mine.choice, correct: mine.correct } : null,
     top: board.slice(0, 5),
+    lobbyBest: p?.lobbyBest || 0,
+    lobbyTop: lobbyTop(),
     playerCount: game.players.size,
   };
 }
@@ -200,36 +278,68 @@ function lanAddress() {
     for (const net of list || []) if (net.family === "IPv4" && !net.internal) return net.address;
   return "localhost";
 }
-const LAN_URL = `http://${lanAddress()}:${PORT}`;
-
-/* 대시보드를 연 브라우저의 주소창 주소를 그대로 학생 접속 주소로 쓴다.
-   여러 랜카드가 잡혀도 선생님이 실제로 접속한 주소가 QR 에 나온다.
-   다만 localhost 로 열면 학생 폰이 찾아올 수 없으니 그때만 랜 주소로 바꾼다. */
-const LOOPBACK = new Set(["localhost", "127.0.0.1", "::1", "0.0.0.0"]);
-function joinUrl(req) {
-  const host = (req.headers.host || "").trim();
-  if (!host) return LAN_URL;
-  let name = host;
-  const cut = name.lastIndexOf(":");
-  if (cut > name.lastIndexOf("]")) name = name.slice(0, cut); // 포트 떼기
-  name = name.split("[").join("").split("]").join("").toLowerCase();
-  if (LOOPBACK.has(name)) return LAN_URL;
-  return `${req.protocol}://${host}`;
-}
-
+const JOIN_URL = `http://${lanAddress()}:${PORT}`;
 app.get("/host", (req, res) => res.sendFile(path.join(__dirname, "public", "host.html")));
+
+/* 대시보드가 자기 주소를 알려주면 그 주소로 QR을 만든다.
+   단 localhost 로 열었을 때는 학생 폰이 못 들어오므로 랜 주소로 되돌린다. */
 app.get("/api/join-info", async (req, res) => {
-  const url = joinUrl(req);
+  let url = JOIN_URL, fallback = false;
+  const given = (req.query.origin || "").toString().trim();
+  if (given) {
+    try {
+      const u = new URL(given);
+      const local = ["localhost", "127.0.0.1", "[::1]", "::1", "0.0.0.0"].includes(u.hostname);
+      if (!/^https?:$/.test(u.protocol)) throw new Error("bad protocol");
+      if (local) fallback = true;
+      else url = u.origin;
+    } catch { fallback = true; }
+  }
   const qr = await QRCode.toDataURL(url, { margin: 1, width: 460, color: { dark: "#0A1020", light: "#FFFFFF" } });
-  res.json({ url, qr });
+  res.json({ url, qr, fallback });
+});
+
+/* public/music 폴더에 넣어 둔 음악 파일 목록.
+   파일 이름 앞에 lobby- / quiz- / board- / game- / final- 을 붙이면 그 장면에서만 재생되고,
+   아무것도 안 붙이면 대기실에서 재생됩니다. */
+const MUSIC_DIR = path.join(__dirname, "public", "music");
+app.get("/api/music", (req, res) => {
+  const slots = { lobby: [], quiz: [], board: [], game: [], final: [] };
+  try {
+    for (const f of fs.readdirSync(MUSIC_DIR)) {
+      if (!/\.(mp3|m4a|ogg|wav|aac)$/i.test(f)) continue;
+      const m = /^(lobby|quiz|board|game|final)[-_]/i.exec(f);
+      slots[m ? m[1].toLowerCase() : "lobby"].push("/music/" + encodeURIComponent(f));
+    }
+  } catch { /* 폴더가 없으면 자체 연주곡만 쓴다 */ }
+  res.json(slots);
 });
 
 /* ---------------- 소켓 ---------------- */
 io.on("connection", (socket) => {
   socket.on("host:join", () => { socket.join("host"); socket.emit("state", hostState()); });
 
-  socket.on("host:start", () => { if (game.questions.length) { game.index = 0; openStage(); } });
-  socket.on("host:openQuestion", () => openStage());
+  socket.on("host:start", () => {
+    if (!game.questions.length) return;
+    game.phase = "leaderboard"; // 선택판을 먼저 보여준다
+    pushAll();
+  });
+
+  // 선택판에서 카드를 클릭 → 3초 예고(intro) → 문제 열림
+  socket.on("host:pick", (no) => {
+    if (!["leaderboard", "lobby"].includes(game.phase)) return;
+    const idx = game.questions.findIndex((q) => q.no === Number(no));
+    if (idx < 0 || game.done.has(Number(no))) return;
+    startIntro(idx);
+  });
+
+  // 스페이스바: 선택판이면 남은 문제 중 순서상 첫 번째를, 예고 중이면 바로 문제를 연다
+  socket.on("host:openQuestion", () => {
+    if (game.phase === "intro") return openStage();
+    if (!["leaderboard", "lobby"].includes(game.phase)) return;
+    const idx = game.questions.findIndex((q) => !game.done.has(q.no));
+    if (idx >= 0) startIntro(idx);
+  });
 
   socket.on("host:closeQuestion", () => {
     if (game.phase === "minigame") return finishMini();
@@ -258,13 +368,39 @@ io.on("connection", (socket) => {
   });
 
   socket.on("host:next", () => {
-    if (game.index + 1 >= game.questions.length) { game.phase = "finished"; saveResults(); }
-    else { game.index += 1; game.phase = "leaderboard"; game.answers.clear(); game.mini = null; }
+    if (!["grading", "minigame_result"].includes(game.phase)) return;
+    const q = currentQuestion();
+    if (q) { game.done.add(q.no); game.lastDone = q.no; }
+    game.answers.clear(); game.mini = null;
+    if (game.done.size >= game.questions.length) { game.phase = "finished"; saveResults(); }
+    else game.phase = "leaderboard";
     pushAll();
+  });
+
+  // 남은 문제가 있어도 여기서 끝내기
+  socket.on("host:finish", () => {
+    if (!["leaderboard"].includes(game.phase)) return;
+    game.phase = "finished"; saveResults(); pushAll();
   });
 
   socket.on("host:leaderboard", () => { game.phase = "leaderboard"; pushAll(); });
   socket.on("host:speedBonus", (on) => { game.speedBonus = !!on; pushHost(); });
+
+  // 지금 열려 있는 문제의 점수를 바꾼다 (채점 중에 바꾸면 즉시 다시 계산)
+  socket.on("host:points", (v) => {
+    const q = currentQuestion();
+    if (!q || q.type === "minigame") return;
+    game.points.set(q.no, clampPoints(v));
+    if (game.phase === "grading") applyScores();
+    pushAll();
+  });
+
+  // 모든 문제에 적용되는 기본 점수
+  socket.on("host:basePoints", (v) => {
+    game.basePoints = clampPoints(v);
+    if (game.phase === "grading") applyScores();
+    pushAll();
+  });
   socket.on("host:kick", (pid) => {
     const p = game.players.get(pid);
     if (p?.socketId) io.to(p.socketId).emit("kicked");
@@ -274,9 +410,13 @@ io.on("connection", (socket) => {
   });
   socket.on("host:reset", () => {
     if (game.mini?.timer) clearTimeout(game.mini.timer);
+    if (game.introTimer) clearTimeout(game.introTimer);
     game.questions = loadQuestions();
     game.phase = "lobby"; game.index = -1; game.answers.clear(); game.mini = null;
-    for (const p of game.players.values()) { p.score = 0; p.history = []; p.streak = 0; p.lastGain = 0; }
+    game.points.clear(); game.done.clear(); game.lastDone = 0;
+    for (const p of game.players.values()) {
+      p.score = 0; p.history = []; p.streak = 0; p.lastGain = 0; p.lobbyBest = 0;
+    }
     pushAll();
   });
 
@@ -320,6 +460,19 @@ io.on("connection", (socket) => {
     pushHost();
   });
 
+  /* ---- 대기실 점프 게임 ---- */
+  socket.on("player:lobbyScore", (v) => {
+    const pid = socket.data.playerId;
+    if (!pid) return;
+    const p = game.players.get(pid);
+    if (!p) return;
+    const s = Math.max(0, Math.min(99999, Math.floor(Number(v) || 0)));
+    if (s <= (p.lobbyBest || 0)) return;
+    p.lobbyBest = s;
+    pushHost();
+    if (p.socketId) io.to(p.socketId).emit("state", playerState(pid));
+  });
+
   /* ---- 미니게임 ---- */
   socket.on("mini:progress", (pct) => {
     const pid = socket.data.playerId;
@@ -351,9 +504,23 @@ io.on("connection", (socket) => {
 });
 
 /* ---------------- 진행 ---------------- */
+const INTRO_MS = 3200;
+function startIntro(idx) {
+  if (game.introTimer) clearTimeout(game.introTimer);
+  if (game.mini?.timer) clearTimeout(game.mini.timer);
+  game.index = idx;
+  game.answers.clear(); game.mini = null;
+  game.phase = "intro";
+  game.introUntil = Date.now() + INTRO_MS;
+  game.introTimer = setTimeout(() => { if (game.phase === "intro") openStage(); }, INTRO_MS);
+  pushAll();
+}
+
 function openStage() {
+  if (game.introTimer) { clearTimeout(game.introTimer); game.introTimer = null; }
   if (game.index < 0) game.index = 0;
   const q = currentQuestion();
+  if (!q) return;
   game.answers.clear();
   if (game.mini?.timer) clearTimeout(game.mini.timer);
   game.openedAt = Date.now();
@@ -394,7 +561,7 @@ function applyScores() {
     p.history = (p.history || []).filter((h) => h.no !== q.no);
     const a = game.answers.get(p.id);
     if (a && a.correct) {
-      let pts = q.points;
+      let pts = qPoints(q);
       if (game.speedBonus) pts += Math.max(0, 50 - order.indexOf(p.id) * 10);
       p.history.push({ no: q.no, pts });
       p.lastGain = pts;
@@ -417,7 +584,7 @@ server.listen(PORT, "0.0.0.0", () => {
   console.log("\n  성경퀴즈 서버가 켜졌습니다.");
   console.log("  ─────────────────────────────────────");
   console.log(`  대시보드(메인 화면) : http://localhost:${PORT}/host`);
-  console.log(`  학생 접속 주소      : ${LAN_URL}  (대시보드를 연 주소가 QR 에 그대로 나옵니다)`);
+  console.log(`  학생 접속 주소      : ${JOIN_URL}`);
   console.log(`  문제 ${game.questions.length - mg}개 + 미니게임 ${mg}개`);
   console.log("  ─────────────────────────────────────\n");
 });
